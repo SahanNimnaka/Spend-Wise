@@ -1,354 +1,486 @@
-# SpendWise
+# SpendWise — Personal Finance Management
 
-SpendWise is a personal finance dashboard for tracking income, expenses, monthly budgets, and spending activity. It uses a React frontend, an Express API, Prisma, and PostgreSQL.
+<p align="center">
+  <strong>A full-stack personal finance dashboard for tracking income, expenses, and monthly budgets.</strong>
+</p>
 
-## Tech stack
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-In%20Development-orange" alt="Project Status: In Development" />
+  <img src="https://img.shields.io/badge/Frontend-React%20%7C%20TypeScript-blue" alt="Frontend: React and TypeScript" />
+  <img src="https://img.shields.io/badge/Backend-Node.js%20%7C%20Express-green" alt="Backend: Node.js and Express" />
+  <img src="https://img.shields.io/badge/Database-PostgreSQL-336791" alt="Database: PostgreSQL" />
+  <img src="https://img.shields.io/badge/ORM-Prisma-2D3748" alt="ORM: Prisma" />
+</p>
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React 19, TypeScript, Vite, Recharts |
-| Backend | Node.js, Express 5, TypeScript |
-| ORM | Prisma 6 |
-| Database | PostgreSQL |
-| Frontend hosting | Vercel |
-| Backend hosting | Render |
-| Managed database | Supabase PostgreSQL |
+---
 
-## Project structure
+## Overview
+
+**SpendWise** is a personal finance management application designed to help users understand and manage their everyday finances through a centralized dashboard.
+
+The application brings income and expense tracking, category-based budgeting, and financial summaries into one place. Its goal is to make financial activity easier to record, review, and understand through a clean interface and meaningful visualizations.
+
+SpendWise is being developed as a full-stack application with a React and TypeScript frontend, a Node.js and Express backend, and a PostgreSQL database managed through Prisma ORM.
+
+## Key Features
+
+> Update this list to reflect the features that are implemented and verified in the current version.
+
+### Dashboard
+- Overview of financial activity
+- Income and expense summaries
+- Balance overview
+- Recent transaction activity
+- Visual representations of spending patterns
+- Budget progress summaries
+
+### Transaction Management
+- Record income and expenses
+- Categorize financial transactions
+- View transaction history
+- Update transaction details
+- Delete transactions
+- Store transaction dates and descriptions
+
+### Budget Management
+- Create budgets for spending categories
+- Set monthly budget limits
+- Track spending against budget limits
+- Review budget progress
+- Identify categories approaching or exceeding their limits
+
+### Data Visualization
+- Charts for financial summaries
+- Category-based spending breakdowns
+- Visual budget progress indicators
+
+### Application Experience
+- Responsive dashboard interface
+- Loading, error, and empty states
+- Structured frontend and backend architecture
+
+## Screenshots
+
+Add screenshots of the actual application here.
+
+| Dashboard | Transactions |
+|---|---|
+| <!-- Add dashboard screenshot --> | <!-- Add transactions screenshot --> |
+
+| Budget Management | Analytics |
+|---|---|
+| <!-- Add budget screenshot --> | <!-- Add analytics screenshot --> |
+
+## Technology Stack
+
+### Frontend
+| Technology | Purpose |
+|---|---|
+| React | Component-based user interface |
+| TypeScript | Static typing and maintainable frontend code |
+| Vite | Development server and build tooling |
+| Tailwind CSS | Utility-first styling |
+| Lucide React | Interface icons |
+| Recharts | Data visualization |
+
+### Backend
+| Technology | Purpose |
+|---|---|
+| Node.js | JavaScript runtime |
+| Express.js | REST API framework |
+| TypeScript | Type-safe backend development |
+| Prisma ORM | Database access and schema management |
+| PostgreSQL | Relational database |
+
+### Development and Deployment
+| Tool | Purpose |
+|---|---|
+| Git and GitHub | Version control and source code hosting |
+| npm | Dependency management |
+| Postman | API testing |
+| Vercel | Frontend deployment |
+| Render | Backend deployment |
+| Supabase | Managed PostgreSQL hosting |
+
+*Deployment providers should be updated to match the actual production setup.*
+
+## Architecture
+
+SpendWise follows a client-server architecture.
+
+```mermaid
+flowchart TD
+    User[User] --> Frontend[React + TypeScript Frontend]
+    Frontend -->|HTTP REST API| Backend[Node.js + Express Backend]
+    Backend --> Prisma[Prisma ORM]
+    Prisma --> Database[(PostgreSQL Database)]
+    Backend --> Frontend
+```
+
+### Request Flow
+
+1. The user interacts with the SpendWise frontend.
+2. The frontend sends an HTTP request to the backend API.
+3. The backend validates and processes the request.
+4. Prisma ORM communicates with PostgreSQL.
+5. The backend returns a response to the frontend.
+6. The frontend updates the interface with the returned data.
+
+## Project Structure
 
 ```text
 SpendWise/
-├── backend/    Express API, Prisma schema/migrations, integration tests
-├── frontend/   React dashboard, API client, Vite configuration
-├── render.yaml Render Blueprint for the backend
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── types/
+│   │   └── ...
+│   ├── package.json
+│   └── ...
+│
+├── backend/
+│   ├── prisma/
+│   │   ├── migrations/
+│   │   └── schema.prisma
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── middleware/
+│   │   ├── config/
+│   │   └── ...
+│   ├── package.json
+│   ├── prisma.config.ts
+│   └── ...
+│
+├── .gitignore
 └── README.md
 ```
 
-## Implemented features
+*The structure above is illustrative. Adjust it to match the actual repository.*
 
-- Transaction create, read, update, and delete
-- Transaction search, category/type/date filters, and pagination
-- Budget create, read, update, and delete
-- Duplicate budget prevention per category/month/year
-- Dashboard summary, category budget overview, and daily activity data
-- Server-side validation and consistent JSON errors
-- Loading, empty, error, and submission states in the frontend
-- Backend integration tests with an isolated test schema
-
-## Local development
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 20.19 or newer
+Install the following before running SpendWise locally:
+
+- [Node.js](https://nodejs.org/) — use a version compatible with the project
 - npm
-- PostgreSQL running locally
-- A database named `spendwise_db` (or your own database name)
+- [PostgreSQL](https://www.postgresql.org/) or a managed PostgreSQL database
+- [Git](https://git-scm.com/)
+- A code editor such as [Visual Studio Code](https://code.visualstudio.com/)
 
-### 1. Backend
+### 1. Clone the Repository
 
-```powershell
-cd backend
-npm install
-npm run prisma:generate
-Copy-Item .env.example .env
+```bash
+git clone https://github.com/SahanNimnaka/SpendWise.git
+cd SpendWise
 ```
 
-Edit `backend/.env`:
+### 2. Install Frontend Dependencies
 
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/spendwise_db?schema=public"
-PORT=4000
-FRONTEND_ORIGIN="http://localhost:5173"
-NODE_ENV="development"
-```
-
-Do not commit `.env`. Only `.env.example` is tracked.
-
-Apply the existing migrations:
-
-```powershell
-npm run prisma:migrate:deploy
-```
-
-Start the API:
-
-```powershell
-npm run dev
-```
-
-The API runs at `http://localhost:4000`. Verify it with:
-
-```powershell
-Invoke-RestMethod http://localhost:4000/health
-Invoke-RestMethod http://localhost:4000/api/health
-```
-
-### 2. Frontend
-
-```powershell
+```bash
 cd frontend
 npm install
-Copy-Item .env.example .env
 ```
 
-`frontend/.env`:
+### 3. Install Backend Dependencies
 
-```env
-VITE_API_URL=http://localhost:4000/api
-```
-
-Start the dashboard:
-
-```powershell
-npm run dev
-```
-
-Open `http://localhost:5173`.
-
-### 3. Tests and builds
-
-Backend integration tests use the isolated PostgreSQL schema `spendwise_test`. They do not modify development data in the `public` schema.
-
-```powershell
-cd backend
-npm test
-npm run typecheck
-npm run typecheck:test
-npm run build
-```
-
-Frontend checks:
-
-```powershell
-cd frontend
-npm run lint
-npm run build
-```
-
-There is no frontend unit-test runner configured; frontend behavior is verified with lint, the production build, and browser checks.
-
-## Environment variables
-
-Only placeholder examples are shown here. Never commit real credentials.
-
-### Backend
-
-| Variable | Required | Production example | Purpose |
-| --- | --- | --- | --- |
-| `DATABASE_URL` | Yes | `postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require` | PostgreSQL connection string |
-| `PORT` | No | Set automatically by Render | API port; defaults to `4000` |
-| `FRONTEND_ORIGIN` | Yes in production | `https://your-frontend.vercel.app` | Allowed CORS origin |
-| `NODE_ENV` | No | `production` | Runtime mode |
-
-Use the Supabase **Session pooler** connection string (port `5432`) for both application queries and Prisma migrations. Supabase's direct connection is IPv6-only unless the paid IPv4 add-on is enabled, and Render does not support outbound IPv6.
-
-### Frontend
-
-| Variable | Required | Production example | Purpose |
-| --- | --- | --- | --- |
-| `VITE_API_URL` | Yes | `https://your-backend.onrender.com/api` | Backend API base URL, including `/api` |
-
-Set `VITE_API_URL` in Vercel, not in committed source code.
-
-## API overview
-
-All API routes use the `/api` prefix. Health checks are also exposed at the root.
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| GET | `/health` | Health check |
-| GET | `/api/health` | Health check |
-| GET | `/api/transactions` | List/filter/paginate transactions |
-| GET | `/api/transactions/:id` | Get one transaction |
-| POST | `/api/transactions` | Create a transaction |
-| PUT | `/api/transactions/:id` | Update a transaction |
-| DELETE | `/api/transactions/:id` | Delete a transaction |
-| GET | `/api/budgets` | List/filter budgets |
-| GET | `/api/budgets/:id` | Get one budget |
-| POST | `/api/budgets` | Create a budget |
-| PUT | `/api/budgets/:id` | Update a budget |
-| DELETE | `/api/budgets/:id` | Delete a budget |
-| GET | `/api/dashboard/summary` | Dashboard totals |
-| GET | `/api/dashboard/budgets` | Category budget overview |
-| GET | `/api/dashboard/activity` | Daily income/expense chart data |
-
-Successful responses use `{ "success": true, "data": ... }`. Errors use `{ "success": false, "error": { "code", "message", "details?" } }`.
-
-## Security notes
-
-- Helmet adds standard security headers.
-- CORS allows only the configured `FRONTEND_ORIGIN`.
-- JSON request bodies are limited to 100 KB.
-- Inputs are validated server-side before Prisma queries.
-- Error responses never include stack traces, database URLs, or credentials.
-- `.env` files are gitignored; only `.env.example` templates are tracked.
-- Authentication and authorization are not implemented in the current phase.
-
-## Deployment
-
-The planned deployment is:
-
-```text
-Vercel (frontend) → Render (backend API) → Supabase (PostgreSQL)
-```
-
-### Deployment status
-
-Deployment configuration has been added, but no live deployment has been completed or verified yet. The URLs below must be filled in only after each service is actually deployed.
-
-| Service | URL |
-| --- | --- |
-| Frontend | Not deployed yet |
-| Backend | Not deployed yet |
-| Database | Not provisioned yet |
-
-### 1. Create the Supabase database
-
-1. Sign in to [Supabase](https://supabase.com) and create a new project.
-2. Save the database password in a password manager. Do not send it in chat or commit it.
-3. Open the project's **Connect** dialog and copy the **Session pooler** connection string (port `5432`).
-4. Replace the password placeholder with the real database password.
-5. Keep the result private. This value becomes the Render `DATABASE_URL` environment variable.
-
-The connection string should look like this placeholder:
-
-```text
-postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require
-```
-
-### 2. Apply migrations to production
-
-Run migrations once before starting the production API, and again after any future schema change. This uses the production-safe `migrate deploy` command; it never resets or drops the database.
-
-From `backend`, set the production URL only in your current terminal session:
-
-```powershell
-cd backend
-$env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require"
-npm run prisma:migrate:deploy
-Remove-Item Env:DATABASE_URL
-```
-
-On macOS/Linux:
+Open another terminal:
 
 ```bash
 cd backend
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/postgres?sslmode=require" npm run prisma:migrate:deploy
+npm install
 ```
 
-Do not use `prisma migrate dev` against production. Do not use `prisma migrate reset` or `prisma db push` against production.
+### 4. Configure Environment Variables
 
-Render's free tier does not support `preDeployCommand` (a paid-plan feature), so migrations are run manually from a trusted machine. After the first migration, the Render service can start normally.
+Create a `.env` file inside the `backend/` directory.
 
-### 3. Deploy the backend on Render
+```env
+# PostgreSQL connection string
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/spendwise_db"
 
-The repository includes `render.yaml` at the root. It defines a free Node web service with root directory `backend`, build command `npm ci --include=dev && npm run prisma:generate && npm run build`, start command `npm start`, and health check path `/api/health`.
+# Backend server
+PORT=5000
 
-**Blueprint method**
-
-1. Push the repository to GitHub first. Render deploys from the repository, not from your local machine.
-2. In Render, choose **New → Blueprint** and select the SpendWise repository.
-3. When prompted for the `sync: false` variables, enter:
-   - `DATABASE_URL`: the Supabase Session pooler URL
-   - `FRONTEND_ORIGIN`: the Vercel production URL, or `http://localhost:5173` temporarily until the frontend is deployed
-4. Apply the Blueprint and wait for the build and health check to pass.
-5. Copy the service URL, for example `https://spendwise-api.onrender.com`.
-
-If the service name or `onrender.com` subdomain is already taken, change `name` in `render.yaml` or use the Render dashboard to choose another name.
-
-**Manual service method**
-
-Create a **Web Service** in Render with:
-
-| Setting | Value |
-| --- | --- |
-| Repository | SpendWise GitHub repository |
-| Branch | `main` |
-| Root Directory | `backend` |
-| Runtime | Node |
-| Build Command | `npm ci --include=dev && npm run prisma:generate && npm run build` |
-| Start Command | `npm start` |
-| Health Check Path | `/api/health` |
-
-Add the environment variables listed above. Render supplies `PORT` automatically.
-
-Free Render web services spin down after 15 minutes of inactivity and take about a minute to wake. Supabase free projects may also be paused after a period of inactivity; restore the project in the Supabase dashboard if the API reports that the database is unavailable. This is expected for a student project.
-
-### 4. Deploy the frontend on Vercel
-
-The frontend includes `frontend/vercel.json` with the Vite build settings.
-
-1. In Vercel, choose **Add New → Project** and import the same GitHub repository.
-2. Set **Root Directory** to `frontend`.
-3. Keep **Framework Preset** as `Vite`.
-4. Add an environment variable for the Production environment:
-   - Key: `VITE_API_URL`
-   - Value: `https://your-backend.onrender.com/api`
-5. Deploy the project.
-6. Copy the production URL, for example `https://spendwise.vercel.app`.
-
-Vite embeds `VITE_API_URL` at build time. If the backend URL changes, update the Vercel variable and redeploy the frontend.
-
-### 5. Connect CORS after both deployments
-
-Once the Vercel URL is known:
-
-1. Open the Render service's environment variables.
-2. Set `FRONTEND_ORIGIN` to the exact Vercel production origin, including `https://` and without a trailing slash.
-3. Save the change and let Render redeploy/restart.
-4. If the backend URL changed, update `VITE_API_URL` in Vercel and redeploy the frontend.
-
-Only one frontend origin is allowed. Vercel preview deployment URLs are not automatically allowed; use the production URL for the deployed application, or add a future multi-origin configuration if previews are needed.
-
-### 6. Verify the deployment
-
-```powershell
-# Backend health
-Invoke-RestMethod https://your-backend.onrender.com/health
-
-# Frontend
-Start-Process https://your-frontend.vercel.app
+# Frontend origin allowed to access the API
+CLIENT_URL="http://localhost:5173"
 ```
 
-Then verify in the browser:
+Create a frontend `.env` file if the frontend uses an environment variable for the API URL:
 
-1. The dashboard loads without console errors.
-2. Empty states appear correctly when there is no data.
-3. Create a transaction and confirm it appears in the dashboard.
-4. Refresh the page and confirm the transaction persists.
-5. Edit and delete the transaction.
-6. Create a budget and confirm the dashboard budget data updates.
-7. Confirm there are no CORS errors or failed network requests in the browser console.
-8. Check the Render logs for server errors.
+```env
+VITE_API_URL="http://localhost:5000"
+```
 
-### Live deployment URLs
+Replace the placeholder database values with your own local or managed PostgreSQL credentials.
 
-These values will be added here only after verification:
+**Never commit real `.env` files, passwords, or API secrets.**
 
-- Frontend: not deployed yet
-- Backend: not deployed yet
-- Database: not provisioned yet
+### 5. Create the Database
 
-## Useful backend scripts
+Create a PostgreSQL database named:
 
-| Script | Purpose |
-| --- | --- |
-| `npm run dev` | Start the API with reload |
-| `npm run build` | Compile TypeScript to `dist/` |
-| `npm start` | Run the compiled API |
-| `npm run typecheck` | Type-check application source |
-| `npm run typecheck:test` | Type-check tests and test configuration |
-| `npm test` | Run backend integration tests |
-| `npm run prisma:migrate` | Create/apply development migrations |
-| `npm run prisma:migrate:deploy` | Apply existing migrations safely |
-| `npm run prisma:studio` | Open Prisma Studio |
+```text
+spendwise_db
+```
 
-## Troubleshooting
+Alternatively, use a database created through a managed PostgreSQL provider.
 
-- **API says the database is unavailable:** confirm PostgreSQL is running and `DATABASE_URL` is correct.
-- **Render cannot connect to Supabase:** use the Session pooler host on port `5432`, not the IPv6-only direct connection.
-- **Migrations fail on Supabase:** confirm the password is correct and that you used `npm run prisma:migrate:deploy`, not `migrate dev`.
-- **Frontend shows an API/network error:** confirm `VITE_API_URL` is set in Vercel and includes `/api`, then redeploy.
-- **CORS blocked:** make sure Render's `FRONTEND_ORIGIN` exactly matches the browser origin, including the protocol.
-- **Tests refuse to start:** make sure `DATABASE_URL` is configured; tests intentionally reject non-test database targets.
-- **Prisma Client missing:** run `npm run prisma:generate` in `backend`.
+### 6. Apply Prisma Migrations
+
+From the `backend/` directory:
+
+```bash
+npx prisma migrate dev
+```
+
+Generate the Prisma Client if required:
+
+```bash
+npx prisma generate
+```
+
+### 7. Run the Backend
+
+From the `backend/` directory:
+
+```bash
+npm run dev
+```
+
+The backend should start at the configured local port.
+
+### 8. Run the Frontend
+
+From the `frontend/` directory:
+
+```bash
+npm run dev
+```
+
+Open the local URL printed by Vite, commonly:
+
+```text
+http://localhost:5173
+```
+
+## Environment Variables
+
+| Variable | Location | Description | Example |
+|---|---|---|---|
+| `DATABASE_URL` | Backend | PostgreSQL connection string | `postgresql://USER:PASSWORD@HOST:5432/spendwise_db` |
+| `PORT` | Backend | Port used by the Express server | `5000` |
+| `CLIENT_URL` | Backend | Allowed frontend origin for CORS | `http://localhost:5173` |
+| `VITE_API_URL` | Frontend | Base URL of the backend API | `http://localhost:5000` |
+
+*Confirm these variable names against the actual application configuration.*
+
+## Database
+
+SpendWise uses PostgreSQL for persistent storage and Prisma ORM for database access and schema management.
+
+### Transaction
+
+The transaction model represents income and expense records.
+
+| Field | Description |
+|---|---|
+| `id` | Unique transaction identifier |
+| `title` | Transaction title |
+| `amount` | Transaction amount |
+| `type` | Income or expense |
+| `category` | Transaction category |
+| `date` | Transaction date |
+| `description` | Optional transaction description |
+| `createdAt` | Record creation timestamp |
+| `updatedAt` | Last update timestamp |
+
+### Budget
+
+The budget model represents a spending limit for a category and time period.
+
+| Field | Description |
+|---|---|
+| `id` | Unique budget identifier |
+| `category` | Budget category |
+| `limit` | Maximum planned spending |
+| `month` | Budget month |
+| `year` | Budget year |
+| `createdAt` | Record creation timestamp |
+| `updatedAt` | Last update timestamp |
+
+*Refer to `backend/prisma/schema.prisma` for the authoritative schema.*
+
+## API
+
+The backend exposes a REST API for frontend communication.
+
+> Replace the example endpoint descriptions below with the exact routes implemented in the backend.
+
+### Transactions
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/transactions` | Retrieve transactions |
+| `GET` | `/api/transactions/:id` | Retrieve a transaction |
+| `POST` | `/api/transactions` | Create a transaction |
+| `PUT` | `/api/transactions/:id` | Update a transaction |
+| `DELETE` | `/api/transactions/:id` | Delete a transaction |
+
+### Budgets
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/budgets` | Retrieve budgets |
+| `POST` | `/api/budgets` | Create a budget |
+| `PUT` | `/api/budgets/:id` | Update a budget |
+| `DELETE` | `/api/budgets/:id` | Delete a budget |
+
+### Dashboard
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/dashboard/summary` | Retrieve financial summary |
+| `GET` | `/api/dashboard/activity` | Retrieve recent activity |
+| `GET` | `/api/dashboard/budgets` | Retrieve budget overview |
+
+### Health Check
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Check backend service status |
+
+## Testing and Quality Checks
+
+Run the scripts available in each package. Typical checks may include:
+
+### Frontend
+
+```bash
+cd frontend
+npm run build
+```
+
+### Backend
+
+```bash
+cd backend
+npm run build
+```
+
+If tests are configured:
+
+```bash
+npm test
+```
+
+Use Postman or another API client to verify the implemented endpoints, including successful requests, invalid input, and missing records.
+
+## Deployment
+
+The intended deployment setup is:
+
+| Component | Suggested Platform |
+|---|---|
+| Frontend | Vercel |
+| Backend | Render |
+| PostgreSQL | Supabase or another managed PostgreSQL provider |
+
+### Deployment Checklist
+
+- [ ] Create and configure the production PostgreSQL database
+- [ ] Set production environment variables
+- [ ] Apply Prisma migrations safely
+- [ ] Deploy the backend API
+- [ ] Configure production CORS
+- [ ] Deploy the frontend
+- [ ] Set the frontend API URL
+- [ ] Verify the health endpoint
+- [ ] Test transaction and budget operations
+- [ ] Confirm no secrets are exposed in the repository
+
+Add the live application and API URLs here once deployment has been verified:
+
+- **Live Application:** `Coming soon`
+- **Backend API:** `Coming soon`
+
+## Security Considerations
+
+SpendWise should follow these security practices:
+
+- Store credentials and secrets in environment variables.
+- Never commit `.env` files containing real credentials.
+- Validate and sanitize incoming API data.
+- Use centralized error handling.
+- Configure CORS for trusted frontend origins.
+- Avoid returning sensitive configuration details in API responses.
+- Keep dependencies updated and review security advisories.
+- Use HTTPS in production.
+
+*Only list security controls that are actually implemented as completed features.*
+
+## Current Status
+
+SpendWise is currently under active development.
+
+The project is being developed incrementally, with the focus on building a reliable full-stack foundation, implementing core financial management features, integrating the frontend with the backend, and preparing the application for deployment.
+
+## Roadmap
+
+Potential future improvements include:
+
+- [ ] Advanced transaction filtering and search
+- [ ] Custom transaction categories
+- [ ] Monthly and yearly financial reports
+- [ ] Export transactions to CSV
+- [ ] Recurring transactions
+- [ ] Savings goals
+- [ ] Improved mobile experience
+- [ ] Authentication and user-specific financial data
+- [ ] Automated testing and CI workflow
+
+*Update this roadmap as features are completed or priorities change.*
+
+## Contributing
+
+Contributions, suggestions, and bug reports are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes.
+4. Run the available checks.
+5. Commit your changes with a descriptive message.
+6. Open a pull request describing the changes.
+
+For example:
+
+```bash
+git checkout -b feat/transaction-filters
+git commit -m "feat: add transaction filtering"
+```
+
+## Author
+
+**Sahan Nimnaka**
+
+- GitHub: [@SahanNimnaka](https://github.com/SahanNimnaka)
+- Portfolio: [Portfolio Website](https://portfolio-eight-psi-ch3aihk8g1.vercel.app/)
+
+## License
+
+This project is currently distributed without a specified open-source license.
+
+If you intend to make SpendWise open source, add a `LICENSE` file and update this section. Without a license, others generally do not have explicit permission to reuse, modify, or distribute the code.
+
+---
+
+<p align="center">
+  <strong>SpendWise — Make every transaction count.</strong>
+</p>
