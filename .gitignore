@@ -30,3 +30,12 @@ Thumbs.db
 
 # Vite
 .vite/
+
+# Deployment tooling metadata
+.vercel/
+
+# Generated tool/skill files
+.agents/
+.claude/
+.cursor/
+.devin/
