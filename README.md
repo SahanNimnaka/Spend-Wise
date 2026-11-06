@@ -425,10 +425,10 @@ The frontend page loads, but data features show an error because `VITE_API_URL` 
 
 ### Production deployment notes
 
-- The backend is deployed as a separate Vercel project with Root Directory `backend`, Framework Preset `Other`, Build Command `npm run vercel-build`, blank Output Directory, and Install Command `npm ci --include=dev`.
+- The backend is deployed as a separate Vercel project with Root Directory `backend`, Framework Preset `Other`, no custom Build Command or Output Directory, and Install Command `npm ci --include=dev`. Vercel detects `api/index.ts` as a serverless function. Do not configure `npm run vercel-build` as the Vercel Build Command.
 - `backend/api/index.ts` exports the Express app as the serverless handler. `src/server.ts` is used only for local long-running development and must not be the Vercel entry point.
 - `backend/vercel.json` routes every request to the serverless entry. Vercel preserves the original request URL across rewrites, so Express sees `/api/...` and `/health` unchanged.
-- `npm run vercel-build` runs `prisma generate` before `tsc`, so the generated client includes the `rhel-openssl-3.0.x` engine required by Vercel's Node runtime.
+- The `postinstall` script generates Prisma Client during dependency installation. The existing `vercel-build` script is retained but is not used as Vercel's Build Command.
 - Pin the backend Vercel project to Node.js `22.x` for Prisma stability.
 - Run `npm run prisma:migrate:deploy` manually against the production database from a trusted machine using the Supabase Session pooler URL. Never run `prisma migrate dev`, `migrate reset`, or `db push` against production, and never run migrations during the Vercel build.
 - Set `FRONTEND_ORIGIN` in the backend Vercel project to the exact frontend production origin. Only one origin is allowed.
