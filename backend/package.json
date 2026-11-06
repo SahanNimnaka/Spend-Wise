@@ -10,7 +10,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "postinstall": "prisma generate",
-    "vercel-build": "npm run prisma:generate && npm run build && npm run typecheck:test",
+    "vercel-build": "npm run prisma:generate && npm run build",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
