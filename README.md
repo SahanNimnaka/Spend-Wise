@@ -79,7 +79,7 @@ Add screenshots of the actual application here.
 | React | Component-based user interface |
 | TypeScript | Static typing and maintainable frontend code |
 | Vite | Development server and build tooling |
-| Tailwind CSS | Utility-first styling |
+| CSS | Application styling (`src/App.css`) |
 | Lucide React | Interface icons |
 | Recharts | Data visualization |
 
@@ -204,19 +204,23 @@ Create a `.env` file inside the `backend/` directory.
 
 ```env
 # PostgreSQL connection string
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/spendwise_db"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/spendwise_db?schema=public"
 
-# Backend server
-PORT=5000
+# Backend server (optional; defaults to 4000)
+PORT=4000
 
 # Frontend origin allowed to access the API
-CLIENT_URL="http://localhost:5173"
+FRONTEND_ORIGIN="http://localhost:5173"
+
+# development | test | production (optional; defaults to development)
+NODE_ENV="development"
 ```
 
-Create a frontend `.env` file if the frontend uses an environment variable for the API URL:
+Create a frontend `.env` file:
 
 ```env
-VITE_API_URL="http://localhost:5000"
+# Base URL of the backend API, including the /api prefix
+VITE_API_URL="http://localhost:4000/api"
 ```
 
 Replace the placeholder database values with your own local or managed PostgreSQL credentials.
@@ -235,17 +239,19 @@ Alternatively, use a database created through a managed PostgreSQL provider.
 
 ### 6. Apply Prisma Migrations
 
-From the `backend/` directory:
+From the `backend/` directory, apply the existing migrations:
 
 ```bash
-npx prisma migrate dev
+npm run prisma:migrate:deploy
 ```
 
-Generate the Prisma Client if required:
+Generate the Prisma Client:
 
 ```bash
-npx prisma generate
+npm run prisma:generate
 ```
+
+Use `npm run prisma:migrate` (`prisma migrate dev`) only while creating new migrations during development. Never use `migrate reset` or `db push` against a production database.
 
 ### 7. Run the Backend
 
@@ -275,12 +281,15 @@ http://localhost:5173
 
 | Variable | Location | Description | Example |
 |---|---|---|---|
-| `DATABASE_URL` | Backend | PostgreSQL connection string | `postgresql://USER:PASSWORD@HOST:5432/spendwise_db` |
-| `PORT` | Backend | Port used by the Express server | `5000` |
-| `CLIENT_URL` | Backend | Allowed frontend origin for CORS | `http://localhost:5173` |
-| `VITE_API_URL` | Frontend | Base URL of the backend API | `http://localhost:5000` |
+| `DATABASE_URL` | Backend | PostgreSQL connection string | `postgresql://USER:PASSWORD@HOST:6543/postgres?pgbouncer=true&connection_limit=1` |
+| `PORT` | Backend | Local development only; Vercel ignores it | `4000` |
+| `FRONTEND_ORIGIN` | Backend | Exact allowed frontend origin for CORS | `https://your-frontend.vercel.app` |
+| `NODE_ENV` | Backend | Runtime mode | `production` |
+| `VITE_API_URL` | Frontend | Base URL of the backend API, including `/api` | `https://your-backend.vercel.app/api` |
 
-*Confirm these variable names against the actual application configuration.*
+For the managed database, use the Supabase **Transaction pooler** connection string (port `6543`, with `?pgbouncer=true&connection_limit=1`) for the Vercel serverless runtime. Run Prisma migrations with the **Session pooler** connection string (port `5432`) instead. Supabase's direct connection is IPv6-only unless the paid IPv4 add-on is enabled.
+
+`VITE_API_URL` is embedded at build time. Set it in the Vercel project settings, not in committed source, and redeploy after changing it.
 
 ## Database
 
@@ -387,10 +396,10 @@ Use Postman or another API client to verify the implemented endpoints, including
 
 The intended deployment setup is:
 
-| Component | Suggested Platform |
+| Component | Platform |
 |---|---|
 | Frontend | Vercel |
-| Backend | Render |
+| Backend | Vercel Functions (Express) |
 | PostgreSQL | Supabase or another managed PostgreSQL provider |
 
 ### Deployment Checklist
@@ -400,16 +409,31 @@ The intended deployment setup is:
 - [ ] Apply Prisma migrations safely
 - [ ] Deploy the backend API
 - [ ] Configure production CORS
-- [ ] Deploy the frontend
-- [ ] Set the frontend API URL
+- [x] Deploy the frontend
+- [ ] Set the frontend API URL (`VITE_API_URL`) and redeploy
 - [ ] Verify the health endpoint
 - [ ] Test transaction and budget operations
 - [ ] Confirm no secrets are exposed in the repository
 
-Add the live application and API URLs here once deployment has been verified:
+Current deployment status:
 
-- **Live Application:** `Coming soon`
-- **Backend API:** `Coming soon`
+- **Frontend:** https://spendwise-mauve-tau.vercel.app — Vercel project `spendwise`, Root Directory `frontend`, Git-connected to `main`.
+- **Backend API:** Not deployed yet.
+- **Database:** Not provisioned yet.
+
+The frontend page loads, but data features show an error because `VITE_API_URL` is not set and the backend does not exist yet. Do not treat the application as fully deployed until the backend and database are live and the checks above pass.
+
+### Production deployment notes
+
+- The backend is deployed as a separate Vercel project with Root Directory `backend`, Framework Preset `Other`, Build Command `npm run vercel-build`, blank Output Directory, and Install Command `npm ci --include=dev`.
+- `backend/api/index.ts` exports the Express app as the serverless handler. `src/server.ts` is used only for local long-running development and must not be the Vercel entry point.
+- `backend/vercel.json` routes every request to the serverless entry. Vercel preserves the original request URL across rewrites, so Express sees `/api/...` and `/health` unchanged.
+- `npm run vercel-build` runs `prisma generate` before `tsc`, so the generated client includes the `rhel-openssl-3.0.x` engine required by Vercel's Node runtime.
+- Pin the backend Vercel project to Node.js `22.x` for Prisma stability.
+- Run `npm run prisma:migrate:deploy` manually against the production database from a trusted machine using the Supabase Session pooler URL. Never run `prisma migrate dev`, `migrate reset`, or `db push` against production, and never run migrations during the Vercel build.
+- Set `FRONTEND_ORIGIN` in the backend Vercel project to the exact frontend production origin. Only one origin is allowed.
+- The frontend `VITE_API_URL` is embedded at build time and must include `/api`; redeploy the frontend after changing it.
+- `render.yaml` is kept only as a legacy blueprint for the previous Render setup and is not used by the current deployment.
 
 ## Security Considerations
 
