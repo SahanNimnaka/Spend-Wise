@@ -1,15 +1,16 @@
+
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 
-import handler from "../api/index.js";
+import { app } from "../src/app.js";
 
-describe("Vercel serverless entry point", () => {
-  it("exports the Express app as the default handler", () => {
-    expect(typeof handler).toBe("function");
+describe("Express application", () => {
+  it("exports the Express app as a function", () => {
+    expect(typeof app).toBe("function");
   });
 
-  it("serves the API health check through the handler", async () => {
-    const response = await request(handler).get("/api/health").expect(200);
+  it("serves the API health check", async () => {
+    const response = await request(app).get("/api/health").expect(200);
 
     expect(response.body).toMatchObject({
       success: true,
@@ -17,8 +18,8 @@ describe("Vercel serverless entry point", () => {
     });
   });
 
-  it("serves the root health check through the handler", async () => {
-    const response = await request(handler).get("/health").expect(200);
+  it("serves the root health check", async () => {
+    const response = await request(app).get("/health").expect(200);
 
     expect(response.body).toMatchObject({
       success: true,
