@@ -425,7 +425,7 @@ The frontend page loads, but data features show an error because `VITE_API_URL` 
 
 ### Production deployment notes
 
-- The backend is deployed as a separate Vercel project with Root Directory `backend`, Framework Preset `Other`, no custom Build Command or Output Directory, and Install Command `npm ci --include=dev`. Vercel detects `api/index.ts` as a serverless function. Do not configure `npm run vercel-build` as the Vercel Build Command.
+- The backend is deployed as a separate Vercel project with Root Directory `backend`, Framework Preset `Other`, Build Command disabled via `buildCommand: null`, blank Output Directory, and Install Command `npm ci --include=dev`. Vercel detects `api/index.ts` as a serverless function. Do not configure a custom Build Command in the dashboard.
 - `backend/api/index.ts` exports the Express app as the serverless handler. `src/server.ts` is used only for local long-running development and must not be the Vercel entry point.
 - `backend/vercel.json` routes every request to the serverless entry. Vercel preserves the original request URL across rewrites, so Express sees `/api/...` and `/health` unchanged.
 - The `postinstall` script generates Prisma Client during dependency installation. The existing `vercel-build` script is retained but is not used as Vercel's Build Command.
